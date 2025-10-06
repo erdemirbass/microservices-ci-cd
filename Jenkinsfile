@@ -1,12 +1,6 @@
 pipeline {
     agent any
 
-    stage('Checkout') {
-    steps {
-        git url: 'https://github.com/erdemirbass/microservices-ci-cd.git', branch: 'main'
-    }
-}
-
     stages {
         stage('Build') {
             steps {
