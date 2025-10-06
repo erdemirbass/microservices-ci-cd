@@ -1,7 +1,17 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout true
+    }
+
     stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/erdemirbass/microservices-ci-cd.git', branch: 'main'
+            }
+        }
+
         stage('Build') {
             steps {
                 dir('services/service-a') {
