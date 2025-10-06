@@ -1,71 +1,53 @@
 pipeline {
     agent any
 
-    options {
-        skipDefaultCheckout(true)
-    }
-
-    environment {
-        APP_NAME     = "service-a"
-        DOCKER_IMAGE = "erdemirbass/${APP_NAME}"
-        REGISTRY     = "ghcr.io"        // TODO: ihtiyaca göre güncelle
-    }
-
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/erdemirbass/microservices-ci-cd.git',
-                    branch: 'main'
+                checkout scm
             }
         }
 
         stage('Build') {
+            agent { docker { image 'node:20-alpine' } }
             steps {
-                echo "Build stage placeholder: build application"
+                dir('services/service-a') {
+                    sh 'npm ci || npm install'
+                }
             }
         }
 
         stage('Unit Tests') {
+            agent { docker { image 'node:20-alpine' } }
             steps {
-                echo "Unit tests placeholder: run tests"
+                dir('services/service-a') {
+                    sh 'npm test'
+                }
             }
         }
 
         stage('Docker Build & Push') {
             steps {
-                echo "Docker build & push placeholder"
-            }
-        }
-
-        stage('Blue/Green Deploy') {
-            steps {
-                echo "Blue/Green deploy placeholder"
-                sh 'bash scripts/deploy_blue_green.sh'
+                echo 'TODO: Docker build step will go here'
             }
         }
 
         stage('Smoke Tests') {
             steps {
-                echo "Smoke tests placeholder"
-                sh 'bash scripts/run_smoke_tests.sh'
+                echo 'TODO: Smoke tests will go here'
             }
         }
 
         stage('Manual Approval') {
             steps {
-                script {
-                    input message: "Yeni sürüm onaylandı mı?"
-                }
+                input message: 'Approve deployment?'
             }
         }
-    }
 
-    post {
-        success {
-            echo "Pipeline tamamlandı."
-        }
-        failure {
-            echo "Pipeline failed. TODO: Rollback / Notification logic"
+        stage('Deploy') {
+            steps {
+                echo 'TODO: Deployment step will go here'
+            }
         }
     }
 }
