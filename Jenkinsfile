@@ -1,17 +1,21 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(true)
+    }
+
     environment {
-        APP_NAME          = "service-a"
-        DOCKER_IMAGE      = "erdemirbass/${APP_NAME}"
-        REGISTRY          = "ghcr.io" // TODO: ihtiyacına göre değiştir
-        GIT_COMMIT_SHORT  = "${env.GIT_COMMIT.take(7)}"
+        APP_NAME     = "service-a"
+        DOCKER_IMAGE = "erdemirbass/${APP_NAME}"
+        REGISTRY     = "ghcr.io"        // TODO: ihtiyaca göre güncelle
     }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                git url: 'https://github.com/erdemirbass/microservices-ci-cd.git',
+                    branch: 'main'
             }
         }
 
