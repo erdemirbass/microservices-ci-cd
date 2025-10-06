@@ -1,15 +1,14 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+    stage('Checkout') {
+    steps {
+        git url: 'https://github.com/erdemirbass/microservices-ci-cd.git', branch: 'main'
+    }
+}
 
+    stages {
         stage('Build') {
-            agent { docker { image 'node:20-alpine' } }
             steps {
                 dir('services/service-a') {
                     sh 'npm ci || npm install'
@@ -18,7 +17,6 @@ pipeline {
         }
 
         stage('Unit Tests') {
-            agent { docker { image 'node:20-alpine' } }
             steps {
                 dir('services/service-a') {
                     sh 'npm test'
